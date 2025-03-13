@@ -1,7 +1,7 @@
 import os
 import requests
 import json
-from fastapi import FastAPI, HTTPException, Request, Header,Query
+from fastapi import FastAPI, HTTPException, Header,Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 SUPERVISOR_API_URL = "http://supervisor"
@@ -50,7 +50,7 @@ def validate_auth(auth_header: str = Header(None)):
     raise HTTPException(status_code=403, detail="Invalid API Key")
 
 @app.get("/info")
-def get_supervisor_info(auth: bool = Query(default=True)):
+def get_supervisor_info(auth: bool = Depends(validate_auth)):
     """Get general info about the Home Assistant Supervisor"""
     response = requests.get(f"{SUPERVISOR_API_URL}/info", headers=HEADERS)
     if response.status_code != 200:
@@ -58,7 +58,7 @@ def get_supervisor_info(auth: bool = Query(default=True)):
     return response.json()
 
 @app.get("/addons")
-def list_addons(auth: bool = Query(default=True)):
+def list_addons(auth: bool = Depends(validate_auth)):
     """Get list of installed add-ons"""
     response = requests.get(f"{SUPERVISOR_API_URL}/addons", headers=HEADERS)
     if response.status_code != 200:
