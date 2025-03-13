@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException, Header,Depends,Request
 from fastapi.middleware.cors import CORSMiddleware
 
 SUPERVISOR_API_URL = "http://supervisor"
-HASSIO_TOKEN = os.getenv("HASSIO_TOKEN")
+SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")
 
 with open("/data/options.json") as f:
     options = json.load(f)
@@ -27,7 +27,7 @@ app.add_middleware(
 )
 
 HEADERS = {
-    "Authorization": f"Bearer {HASSIO_TOKEN}",
+    "Authorization": f"Bearer {SUPERVISOR_TOKEN}",
     "Content-Type": "application/json"
 }
 
