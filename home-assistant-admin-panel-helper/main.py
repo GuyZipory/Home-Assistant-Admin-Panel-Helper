@@ -51,6 +51,13 @@ def validate_auth(auth_header: str = Header(None)):
     print(" Invalid API Key")
     raise HTTPException(status_code=403, detail="Invalid API Key")
 
+@app.get("/isApiUpNoAuth")
+def isApiUp():
+    return {"status": "up"}
+
+@app.get("/isApiUpWithAuth")
+def isApiUpWithAuth(auth: bool = Depends(validate_auth)):
+    return {"status": "up"}
 
 @app.get("/info")
 def get_supervisor_info(auth: bool = Depends(validate_auth)):
