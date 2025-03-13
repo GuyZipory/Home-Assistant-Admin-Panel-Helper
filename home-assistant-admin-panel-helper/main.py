@@ -1,7 +1,7 @@
 import os
 import requests
 import json
-from fastapi import FastAPI, HTTPException, Request, Header
+from fastapi import FastAPI, HTTPException, Request, Header,Query
 from fastapi.middleware.cors import CORSMiddleware
 
 SUPERVISOR_API_URL = "http://supervisor"
@@ -12,6 +12,10 @@ with open("/data/options.json") as f:
 VALID_API_KEY = options.get("api_key", "your-secret-api-key")
 
 app = FastAPI()
+
+
+
+
 
 # ✅ Set CORS to allow requests from Home Assistant’s frontend
 app.add_middleware(
@@ -42,7 +46,7 @@ def validate_auth(auth_header: str = Header(None)):
     raise HTTPException(status_code=401, detail="Invalid Authorization Header")
 
 @app.get("/info")
-def get_supervisor_info(auth: bool = validate_auth):
+def get_supervisor_info(auth: bool = Query(default=True)):
     """Get general info about the Home Assistant Supervisor"""
     response = requests.get(f"{SUPERVISOR_API_URL}/info", headers=HEADERS)
     if response.status_code != 200:
@@ -50,7 +54,7 @@ def get_supervisor_info(auth: bool = validate_auth):
     return response.json()
 
 @app.get("/addons")
-def list_addons(auth: bool = validate_auth):
+def list_addons(auth: bool = Query(default=True)):
     """Get list of installed add-ons"""
     response = requests.get(f"{SUPERVISOR_API_URL}/addons", headers=HEADERS)
     if response.status_code != 200:
