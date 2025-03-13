@@ -31,29 +31,32 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def validate_auth(auth_header: str = Header(None), request: Request = None):
-    print(" validate_auth() was called")  # Debugging print
+def validate_auth(request: Request):
+    print(" validate_auth() was called")
 
-    if request:
-        print(f" Received Headers: {dict(request.headers)}")  # Log all headers
+    # Print all received headers
+    print(f" Received Headers: {dict(request.headers)}")
 
+    # Fetch Authorization header (case-insensitive)
+    auth_header = request.headers.get("authorization")
 
     if not auth_header:
-        print("Missing Authorization Header")
+        print(" Missing Authorization Header")
         raise HTTPException(status_code=401, detail="Missing Authorization Header")
 
-    print(f"🔍 Received Auth Header: {auth_header}")
+    print(f" Received Auth Header: {auth_header}")
 
     if auth_header.startswith("Bearer "):
         token = auth_header.split(" ")[1]
-        print(f"Extracted Token: {token}")
+        print(f"🔑 Extracted Token: {token}")
 
         if token == VALID_API_KEY:
-            print(" Authentication Successful")
+            print("✅ Authentication Successful")
             return True
 
     print(" Invalid API Key")
     raise HTTPException(status_code=403, detail="Invalid API Key")
+
 
 @app.get("/isApiUpNoAuth")
 def isApiUp():
