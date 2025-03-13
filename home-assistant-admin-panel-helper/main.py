@@ -33,9 +33,12 @@ HEADERS = {
 
 def validate_auth(request: Request):
     print(" validate_auth() was called")
+    
 
     # Print all received headers
     print(f" Received Headers: {dict(request.headers)}")
+    # print the HEADERS 
+    print(f" HEADERS: {HEADERS}")
 
     # Fetch Authorization header (case-insensitive)
     auth_header = request.headers.get("authorization")
