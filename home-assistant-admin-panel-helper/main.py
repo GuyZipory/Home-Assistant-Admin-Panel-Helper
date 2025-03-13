@@ -31,8 +31,12 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def validate_auth(auth_header: str = Header(None)):
+def validate_auth(auth_header: str = Header(None), request: Request = None):
     print(" validate_auth() was called")  # Debugging print
+
+    if request:
+        print(f" Received Headers: {dict(request.headers)}")  # Log all headers
+
 
     if not auth_header:
         print("Missing Authorization Header")
