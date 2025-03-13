@@ -32,18 +32,22 @@ HEADERS = {
 }
 
 def validate_auth(auth_header: str = Header(None)):
-    """Check if the request contains a valid authentication token."""
     if not auth_header:
+        print("❌ Missing Authorization Header")
         raise HTTPException(status_code=401, detail="Missing Authorization Header")
+
+    print(f"🔍 Received Auth Header: {auth_header}")
 
     if auth_header.startswith("Bearer "):
         token = auth_header.split(" ")[1]
-        if token == VALID_API_KEY:
-            return True
-        else:
-            raise HTTPException(status_code=403, detail="Invalid API Key")
+        print(f"🔑 Extracted Token: {token}")
 
-    raise HTTPException(status_code=401, detail="Invalid Authorization Header")
+        if token == VALID_API_KEY:
+            print("✅ Authentication Successful")
+            return True
+
+    print("❌ Invalid API Key")
+    raise HTTPException(status_code=403, detail="Invalid API Key")
 
 @app.get("/info")
 def get_supervisor_info(auth: bool = Query(default=True)):
