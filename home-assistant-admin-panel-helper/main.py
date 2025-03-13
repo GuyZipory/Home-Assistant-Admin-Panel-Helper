@@ -69,7 +69,7 @@ def isApiUp():
 def isApiUpWithAuth(auth: bool = Depends(validate_auth)):
     return {"status": "up"}
 
-@app.get("/info")
+@app.get("/api/info")
 def get_supervisor_info(auth: bool = Depends(validate_auth)):
     """Get general info about the Home Assistant Supervisor"""
     response = requests.get(f"{SUPERVISOR_API_URL}/info", headers=HEADERS)
@@ -77,7 +77,7 @@ def get_supervisor_info(auth: bool = Depends(validate_auth)):
         raise HTTPException(status_code=response.status_code, detail=response.text)
     return response.json()
 
-@app.get("/addons")
+@app.get("/api/addons")
 def list_addons(auth: bool = Depends(validate_auth)):
     """Get list of installed add-ons"""
     response = requests.get(f"{SUPERVISOR_API_URL}/addons", headers=HEADERS)
