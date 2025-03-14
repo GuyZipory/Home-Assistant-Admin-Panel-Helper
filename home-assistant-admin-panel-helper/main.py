@@ -1,29 +1,26 @@
 import os
-import requests
 import json
-from fastapi import FastAPI, HTTPException, Header,Depends,Request
+import requests
+from fastapi import FastAPI, HTTPException, Header, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 SUPERVISOR_API_URL = "http://supervisor"
 SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")
 
+# Load API Key from Home Assistant options.json
 with open("/data/options.json") as f:
     options = json.load(f)
 VALID_API_KEY = options.get("api_key", "your-secret-api-key")
 
 app = FastAPI()
 
-
-
-
-
-# ✅ Set CORS to allow requests from Home Assistant’s frontend
+# Enable CORS to allow Home Assistant to access the API externally
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow Home Assistant UI and external sources
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers, including Authorization
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 HEADERS = {
@@ -31,62 +28,44 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
+# Authentication function
 def validate_auth(request: Request):
-    print(" validate_auth() was called")
-    
-
-    # Print all received headers
-    print(f" Received Headers: {dict(request.headers)}")
-    # print the HEADERS 
-    print(f" HEADERS: {HEADERS}")
-
-    # Fetch Authorization header (case-insensitive)
     auth_header = request.headers.get("authorization")
-
     if not auth_header:
-        print(" Missing Authorization Header")
         raise HTTPException(status_code=401, detail="Missing Authorization Header")
-
-    print(f" Received Auth Header: {auth_header}")
 
     if auth_header.startswith("Bearer "):
         token = auth_header.split(" ")[1]
-        print(f"🔑 Extracted Token: {token}")
-
         if token == VALID_API_KEY:
-            print("✅ Authentication Successful")
             return True
 
-    print(" Invalid API Key")
     raise HTTPException(status_code=403, detail="Invalid API Key")
 
+# API Endpoint to test connection
+@app.get("/api/myaddon")
+async def my_api_endpoint(request: Request):
+    validate_auth(request)
+    return {"message": "Hello from Home Assistant Add-on!"}
 
-@app.get("/isApiUpNoAuth")
-def isApiUp():
-    return {"status": "up"}
-
-@app.get("/isApiUpWithAuth")
-def isApiUpWithAuth(auth: bool = Depends(validate_auth)):
-    return {"status": "up"}
-
-@app.get("/api/info")
-def get_supervisor_info(auth: bool = Depends(validate_auth)):
-    """Get general info about the Home Assistant Supervisor"""
+# Supervisor Info Endpoint
+@app.get("/api/supervisor/info")
+async def get_supervisor_info(request: Request):
+    validate_auth(request)
     response = requests.get(f"{SUPERVISOR_API_URL}/info", headers=HEADERS)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.text)
     return response.json()
 
-@app.get("/api/addons")
-def list_addons(auth: bool = Depends(validate_auth)):
-    """Get list of installed add-ons"""
+# List Installed Add-ons
+@app.get("/api/supervisor/addons")
+async def list_addons(request: Request):
+    validate_auth(request)
     response = requests.get(f"{SUPERVISOR_API_URL}/addons", headers=HEADERS)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.text)
     return response.json()
 
-# ✅ More endpoints can be added with the same authentication check
-
+# Start Uvicorn server
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=80)
