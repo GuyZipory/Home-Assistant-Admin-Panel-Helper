@@ -17,7 +17,7 @@
   "auth_api": true,
   "map": ["config:rw"],
   "panel_custom": {
-    "url_path": "api/myaddon",
+    "url_path": "myaddon",
     "sidebar_title": "My Addon API",
     "sidebar_icon": "mdi:api",
     "require_admin": true

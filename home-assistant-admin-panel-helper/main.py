@@ -42,13 +42,13 @@ def validate_auth(request: Request):
 
 
 # 🔹 Home Assistant API PROXY Endpoint
-@app.get("/api/myaddon")
+@app.get("/myaddon")
 async def my_api_endpoint(request: Request):
     validate_auth(request)
     return {"message": "Hello from Home Assistant Add-on!"}
 
 # 🔹 Supervisor Info Endpoint
-@app.get("/api/myaddon/supervisor/info")
+@app.get("/myaddon/supervisor/info")
 async def get_supervisor_info(request: Request):
     validate_auth(request)
     response = requests.get(f"{SUPERVISOR_API_URL}/info", headers=HEADERS)
@@ -57,7 +57,7 @@ async def get_supervisor_info(request: Request):
     return response.json()
 
 # 🔹 Supervisor Add-ons Endpoint
-@app.get("/api/myaddon/supervisor/addons")
+@app.get("/myaddon/supervisor/addons")
 async def list_addons(request: Request):
     validate_auth(request)
     response = requests.get(f"{SUPERVISOR_API_URL}/addons", headers=HEADERS)
