@@ -1,0 +1,14 @@
+{
+  "title": "Home Assistant Admin Panel Helper",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Home Assistant Admin Panel Helper Setup",
+        "description": "Enter the API key required for external calls.",
+        "data": {
+          "api_key": "API Key"
+        }
+      }
+    }
+  }
+}

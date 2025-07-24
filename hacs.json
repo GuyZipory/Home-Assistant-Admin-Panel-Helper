@@ -1,0 +1,8 @@
+{
+  "name": "Admin Panel Helper",
+  "content_in_root": false,
+  "domains": ["admin_panel_helper"],
+  "country": "any",
+  "homeassistant": "2023.0.0",
+  "render_readme": true
+}
