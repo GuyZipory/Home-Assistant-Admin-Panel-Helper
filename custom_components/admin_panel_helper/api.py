@@ -270,6 +270,11 @@ class AdminPanelHelperView(HomeAssistantView):
                 hashlib.sha256
             ).hexdigest()
             
+            _LOGGER.warning("==== HMAC DEBUG ====")
+            _LOGGER.warning("Expected message: %s", message)
+            _LOGGER.warning("Expected signature: %s", expected_signature)
+            _LOGGER.warning("Received signature: %s", signature)
+            
             return hmac.compare_digest(signature, expected_signature)
             
         except Exception as e:
