@@ -1,3 +1,4 @@
+from email.mime import message
 import logging
 import os
 import hmac
@@ -270,10 +271,10 @@ class AdminPanelHelperView(HomeAssistantView):
                 hashlib.sha256
             ).hexdigest()
             
-            print("==== HMAC DEBUG ====")
-            print("Expected message: %s", message)
-            print("Expected signature: %s", expected_signature)
-            print("Received signature: %s", signature)
+            _LOGGER.error("DEBUG: Expected message: %s", message)
+            _LOGGER.error("DEBUG: Expected signature: %s", expected_signature)
+            _LOGGER.error("DEBUG: Received signature: %s", signature)
+            _LOGGER.error("DEBUG: Headers: %s", dict(request.headers))
             
             return hmac.compare_digest(signature, expected_signature)
             

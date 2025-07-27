@@ -1,7 +1,7 @@
 {
   "domain": "admin_panel_helper",
   "name": "Home Assistant Admin Panel Helper",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "documentation": "https://github.com/GuyZipory/Home-Assistant-Admin-Panel-Helper/",
   "dependencies": [],
   "codeowners": ["@GuyZipory"],
